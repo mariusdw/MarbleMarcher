@@ -16,7 +16,6 @@
 */
 #include "Scene.h"
 #include "Scores.h"
-#include "Res.h"
 #include <iostream>
 
 static const float pi = 3.14159265359f;
@@ -70,20 +69,15 @@ Scene::Scene(sf::Music* m1, sf::Music* m2) :
   frac_params.setOnes();
   frac_params_smooth.setOnes();
   SnapCamera();
-  const Res goal_res(IDR_GOAL_SND);
-  buff_goal.loadFromMemory(goal_res.ptr, goal_res.size);
+  buff_goal.loadFromFile("assets/goal.wav");
   sound_goal.setBuffer(buff_goal);
-  const Res bounce1_res(IDR_BOUNCE1_SND);
-  buff_bounce1.loadFromMemory(bounce1_res.ptr, bounce1_res.size);
+  buff_bounce1.loadFromFile("assets/bounce1.wav");
   sound_bounce1.setBuffer(buff_bounce1);
-  const Res bounce2_res(IDR_BOUNCE2_SND);
-  buff_bounce2.loadFromMemory(bounce2_res.ptr, bounce2_res.size);
+  buff_bounce2.loadFromFile("assets/bounce2.wav");
   sound_bounce2.setBuffer(buff_bounce2);
-  const Res bounce3_res(IDR_BOUNCE3_SND);
-  buff_bounce3.loadFromMemory(bounce3_res.ptr, bounce3_res.size);
+  buff_bounce3.loadFromFile("assets/bounce3.wav");
   sound_bounce3.setBuffer(buff_bounce3);
-  const Res shatter_res(IDR_SHATTER_SND);
-  buff_shatter.loadFromMemory(shatter_res.ptr, shatter_res.size);
+  buff_shatter.loadFromFile("assets/shatter.wav");
   sound_shatter.setBuffer(buff_shatter);
 }
 

@@ -16,7 +16,6 @@
 */
 #include "Overlays.h"
 #include "Level.h"
-#include "Res.h"
 #include "Scores.h"
 
 static const float pi = 3.14159265359f;
@@ -28,20 +27,15 @@ Overlays::Overlays(const sf::Font* _font, const sf::Font* _font_mono) :
   draw_scale(1.0f),
   top_level(true) {
   memset(all_hover, 0, sizeof(all_hover));
-  const Res hover_res(IDR_HOVER_SND);
-  buff_hover.loadFromMemory(hover_res.ptr, hover_res.size);
+  buff_hover.loadFromFile("assets/menu_hover.wav");
   sound_hover.setBuffer(buff_hover);
-  const Res click_res(IDR_CLICK_SND);
-  buff_click.loadFromMemory(click_res.ptr, click_res.size);
+  buff_click.loadFromFile("assets/menu_click.wav");
   sound_click.setBuffer(buff_click);
-  const Res count_res(IDR_COUNT_SND);
-  buff_count.loadFromMemory(count_res.ptr, count_res.size);
+  buff_count.loadFromFile("assets/count_down.wav");
   sound_count.setBuffer(buff_count);
-  const Res go_res(IDR_GO_SND);
-  buff_go.loadFromMemory(go_res.ptr, go_res.size);
+  buff_go.loadFromFile("assets/count_go.wav");
   sound_go.setBuffer(buff_go);
-  const Res arrow_res(IDR_ARROW);
-  arrow_tex.loadFromMemory(arrow_res.ptr, arrow_res.size);
+  arrow_tex.loadFromFile("assets/arrow.png");
   arrow_tex.setSmooth(true);
   arrow_spr.setTexture(arrow_tex);
   arrow_spr.setOrigin(arrow_spr.getLocalBounds().width / 2, arrow_spr.getLocalBounds().height / 2);
@@ -65,7 +59,7 @@ void Overlays::UpdateMenu(float mouse_x, float mouse_y) {
   MakeText("Controls", 80, 370, 60, sf::Color::White, all_text[CONTROLS]);
   MakeText("Screen Saver", 80, 440, 60, sf::Color::White, all_text[SCREEN_SAVER]);
   MakeText("Exit", 80, 510, 60, sf::Color::White, all_text[EXIT]);
-  MakeText("©2018 CodeParade\nMusic by PettyTheft", 16, 652, 32, sf::Color::White, all_text[CREDITS], true);
+  MakeText("ï¿½2018 CodeParade\nMusic by PettyTheft", 16, 652, 32, sf::Color::White, all_text[CREDITS], true);
   all_text[TITLE].setLineSpacing(0.76f);
   all_text[CREDITS].setLineSpacing(0.9f);
 

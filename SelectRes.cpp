@@ -15,19 +15,17 @@
 * along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
 #include "SelectRes.h"
-#include "Res.h"
 
 const Resolution all_resolutions[num_resolutions] = {
-  Resolution(640, 360, "I don't have a dedicated GPU"),
-  Resolution(960, 540, "I have a low-end GPU"),
+  Resolution(320, 200, "I don't have a dedicated GPU"),
+  Resolution(800, 600, "I have a low-end GPU"),
   Resolution(1280, 720, "I have a mid-range GPU"),
   Resolution(1600, 900, "I have a high-end GPU"),
   Resolution(1920, 1080, "Will be fast enough someday...")
 };
 
 SelectRes::SelectRes(const sf::Font* _font) : font(_font), is_fullscreen(false) {
-  Res hover_res(IDR_HOVER_SND);
-  buff_hover.loadFromMemory(hover_res.ptr, hover_res.size);
+  buff_hover.loadFromFile("assets/menu_hover.wav");
   sound_hover.setBuffer(buff_hover);
 }
 

@@ -14,16 +14,15 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.If not, see <http://www.gnu.org/licenses/>.
 */
+#include "Constants.h"
 #include "Scene.h"
 #include "Level.h"
 #include "Overlays.h"
-#include "Res.h"
 #include "SelectRes.h"
 #include "Scores.h"
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
-#include <delayimp.h>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -54,6 +53,10 @@ static int frame_num = 0;
 static bool lock_mouse = false;
 static GameMode game_mode = MAIN_MENU;
 
+void Message(std::string message) {
+  std::cout << message;
+}
+
 void LockMouse(sf::RenderWindow& window) {
   window.setMouseCursorVisible(false);
   const sf::Vector2u size = window.getSize();
@@ -63,6 +66,8 @@ void LockMouse(sf::RenderWindow& window) {
 void UnlockMouse(sf::RenderWindow& window) {
   window.setMouseCursorVisible(true);
 }
+
+#ifndef LINUX_BUILD
 void extractDLL(const char* fname, int res_id) {
   //Get the current path of the executable
   HMODULE hModule = GetModuleHandleW(NULL);
@@ -80,67 +85,65 @@ void extractDLL(const char* fname, int res_id) {
   fout.write((const char*)res_dll.ptr, res_dll.size);
   fout.close();
 }
+#endif
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(LINUX_BUILD)
 int main(int argc, char *argv[]) {
 #else
 int WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR lpCmdLine, int nCmdShow) {
 #endif
   //Extract openAL dll
+  #ifndef LINUX_BUILD
   extractDLL("openal32.dll", IDR_OPENAL);
+  #endif
 
   //Make sure shader is supported
   if (!sf::Shader::isAvailable()) {
-    MessageBox(nullptr, TEXT("Graphics card does not support shaders"), TEXT("ERROR"), MB_OK);
+    Message("Graphics card does not support shaders");
     return 1;
   }
   //Load the vertex shader
   sf::Shader shader;
-  if (!shader.loadFromMemory(Res(IDR_VERT).Str(), sf::Shader::Vertex)) {
-    MessageBox(nullptr, TEXT("Failed to compile vertex shader"), TEXT("ERROR"), MB_OK);
+  if (!shader.loadFromFile("assets/vert.glsl", sf::Shader::Vertex)) {
+    Message("Failed to compile vertex shader");
     return 1;
   }
   //Load the fragment shader
-  if (!shader.loadFromMemory(Res(IDR_FRAG).Str(), sf::Shader::Fragment)) {
-    MessageBox(nullptr, TEXT("Failed to compile fragment shader"), TEXT("ERROR"), MB_OK);
+  if (!shader.loadFromFile("assets/frag.glsl", sf::Shader::Fragment)) {
+    Message("Failed to compile fragment shader");
     return 1;
   }
 
   //Load the font
   sf::Font font;
-  const Res font_res(IDR_FONT);
-  if (!font.loadFromMemory(font_res.ptr, font_res.size)) {
-    MessageBox(nullptr, TEXT("Unable to load font"), TEXT("ERROR"), MB_OK);
+  if (!font.loadFromFile("assets/Orbitron-Bold.ttf")) {
+    Message("Unable to load font");
     return 1;
   }
   //Load the mono font
   sf::Font font_mono;
-  const Res font_mono_res(IDR_FONT_MONO);
-  if (!font_mono.loadFromMemory(font_mono_res.ptr, font_mono_res.size)) {
-    MessageBox(nullptr, TEXT("Unable to load mono font"), TEXT("ERROR"), MB_OK);
+  if (!font_mono.loadFromFile("assets/Inconsolata-Bold.ttf")) {
+    Message("Unable to load mono font");
     return 1;
   }
 
   //Load the music
   sf::Music menu_music;
-  const Res menu_music_res(IDR_MENU_MUS);
-  menu_music.openFromMemory(menu_music_res.ptr, menu_music_res.size);
+  menu_music.openFromFile("assets/menu.ogg");
   menu_music.setLoop(true);
   menu_music.setVolume(music_vol);
   sf::Music level1_music;
-  const Res level1_music_res(IDR_LEVEL1_MUS);
-  level1_music.openFromMemory(level1_music_res.ptr, level1_music_res.size);
+  level1_music.openFromFile("assets/level1.ogg");
   level1_music.setLoop(true);
   sf::Music level2_music;
-  const Res level2_music_res(IDR_LEVEL2_MUS);
-  level2_music.openFromMemory(level2_music_res.ptr, level2_music_res.size);
+  level2_music.openFromFile("assets/level2.ogg");
   level2_music.setLoop(true);
   sf::Music credits_music;
-  const Res credits_music_res(IDR_CREDITS_MUS);
-  credits_music.openFromMemory(credits_music_res.ptr, credits_music_res.size);
+  credits_music.openFromFile("assets/credits.ogg");
   credits_music.setLoop(true);
 
   //Get the directory for saving and loading high scores
+  #ifndef LINUX_BUILD
   char *pValue = nullptr; size_t len = 0;
   if (_dupenv_s(&pValue, &len, "APPDATA") != 0 || pValue == nullptr) {
     MessageBox(nullptr, TEXT("Failed to find AppData directory"), TEXT("ERROR"), MB_OK);
@@ -153,6 +156,10 @@ int WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR lpCmdLine, int nCmdShow) {
     return 1;
   }
   const std::string save_file = save_dir + "\\scores.bin";
+  #else
+    const std::string save_dir = std::string("saves");
+    const std::string save_file = save_dir + "/scores.bin";
+  #endif
 
   //Load scores if available
   high_scores.Load(save_file);
