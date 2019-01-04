@@ -157,10 +157,7 @@ void Scene::StartNewGame() {
 }
 
 void Scene::StartNextLevel() {
-  if (play_single) {
-    cam_mode = MARBLE;
-    ResetLevel();
-  } else if (cur_level + 1 >= num_levels) {
+  if (cur_level + 1 >= num_levels) {
     cam_mode = FINAL;
   } else {
     cur_level += 1;
