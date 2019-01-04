@@ -304,7 +304,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR lpCmdLine, int nCmdShow) {
               game_mode = MAIN_MENU;
               scene.SetExposure(1.0f);
             } else if (selected >= Overlays::L0 && selected <= Overlays::L14) {
-              if (high_scores.Has(selected - Overlays::L0)) {
+              //if (high_scores.Has(selected - Overlays::L0)) {
                 menu_music.stop();
                 game_mode = PLAYING;
                 scene.SetExposure(1.0f);
@@ -312,7 +312,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR lpCmdLine, int nCmdShow) {
                 scene.GetCurMusic().setVolume(music_vol);
                 scene.GetCurMusic().play();
                 LockMouse(window);
-              }
+              //}
             }
           } else if (game_mode == SCREEN_SAVER) {
             scene.SetMode(Scene::INTRO);
